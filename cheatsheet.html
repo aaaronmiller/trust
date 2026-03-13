@@ -4,460 +4,415 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#030712">
-    <title>Meeting Intelligence Brief</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <title>Trust & Portfolio Intel Brief</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: { 950: '#030712', 900: '#111827', 800: '#1f2937' },
+                        emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        red: { 500: '#ef4444', 900: '#7f1d1d' }
+                    },
+                    keyframes: {
+                        'slide-down': { '0%': { opacity: '0', transform: 'translateY(-10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    },
+                    animation: { 'slide-down': 'slide-down 0.2s ease-out forwards' }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-deep: #030712;
-            --bg-surface: #111827;
-            --bg-card: #1f2937;
-            --bg-hover: #374151;
-            
-            --border-subtle: rgba(255, 255, 255, 0.1);
-            --border-highlight: rgba(255, 255, 255, 0.2);
-            
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --text-tertiary: #6b7280;
-            
-            --accent-emerald: #10b981;
-            --accent-emerald-dim: rgba(16, 185, 129, 0.15);
-            --accent-blue: #3b82f6;
-            --accent-blue-dim: rgba(59, 130, 246, 0.15);
-            --accent-purple: #8b5cf6;
-            --accent-purple-dim: rgba(139, 92, 246, 0.15);
-            --accent-amber: #f59e0b;
-            --accent-amber-dim: rgba(245, 158, 11, 0.15);
-            
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            
-            --radius-xl: 16px;
-            --radius-lg: 12px;
-            --radius-md: 8px;
-            
-            --easing: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { display: none; }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-primary);
-            font-family: var(--font-sans);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            padding: calc(env(safe-area-inset-top) + 24px) 16px calc(env(safe-area-inset-bottom) + 40px) 16px;
-            overflow-x: hidden;
-        }
-
-        /* Ambient Glow Background */
-        .ambient-glow {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1;
-            background: 
-                radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
-        }
-
-        header {
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        h1 {
-            font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        .subtitle {
-            font-size: 0.9rem; color: var(--text-secondary);
-        }
-
-        /* Accordion Structure */
-        .accordion-group {
-            display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;
-        }
-
-        .accordion {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            transition: border-color 0.3s var(--easing);
-        }
-        
-        /* Thematic Accents */
-        .acc-laws { border-left: 3px solid var(--accent-emerald); }
-        .acc-portfolio { border-left: 3px solid var(--accent-purple); }
-        .acc-tax { border-left: 3px solid var(--accent-blue); }
-        .acc-risk { border-left: 3px solid var(--accent-amber); }
-
-        .acc-header {
-            padding: 18px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; user-select: none;
-            background: rgba(255, 255, 255, 0.01);
-            transition: background 0.2s;
-        }
-        .acc-header:active { background: rgba(255, 255, 255, 0.03); }
-        
-        .acc-title {
-            font-weight: 600; font-size: 1.05rem; display: flex; align-items: center; gap: 12px;
-        }
-        
-        .acc-icon {
-            display: flex; align-items: center; justify-content: center;
-            width: 32px; height: 32px; border-radius: var(--radius-md); font-size: 1rem;
-        }
-        .acc-laws .acc-icon { background: var(--accent-emerald-dim); color: var(--accent-emerald); }
-        .acc-portfolio .acc-icon { background: var(--accent-purple-dim); color: var(--accent-purple); }
-        .acc-tax .acc-icon { background: var(--accent-blue-dim); color: var(--accent-blue); }
-        .acc-risk .acc-icon { background: var(--accent-amber-dim); color: var(--accent-amber); }
-
-        .acc-chevron {
-            color: var(--text-tertiary);
-            transition: transform 0.4s var(--easing);
-            display: flex; align-items: center;
-        }
-
-        .accordion.open .acc-chevron { transform: rotate(180deg); color: var(--text-primary); }
-        .accordion.open { border-color: var(--border-highlight); }
-        
-        .acc-content {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.4s var(--easing);
-            background: var(--bg-deep); /* Inner dark well */
-        }
-        
-        .acc-inner { padding: 20px; border-top: 1px dashed var(--border-subtle); }
-
-        /* Content Blocks */
-        .block-label {
-            font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase;
-            letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 8px; font-weight: 600;
-        }
-        
-        .context-text {
-            font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;
-        }
-
-        /* Tap to copy UI */
-        .verbatim-script {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 16px; margin-bottom: 20px;
-            cursor: pointer; position: relative;
-            transition: all 0.2s var(--easing);
-        }
-        .verbatim-script:active { transform: scale(0.98); border-color: var(--accent-blue); }
-        .verbatim-script::before {
-            content: 'TAP TO COPY VERBATIM';
-            display: block; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
-            color: var(--accent-blue); margin-bottom: 8px; letter-spacing: 0.05em;
-        }
-        .script-text {
-            font-size: 1.1rem; color: #fff; line-height: 1.4; font-style: italic; font-weight: 500;
-        }
-
-        /* Response Matrix Grid */
-        .response-matrix {
-            display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px;
-        }
-        .matrix-item {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 12px;
-        }
-        .matrix-if {
-            font-family: var(--font-mono); font-size: 0.75rem; color: #f43f5e; margin-bottom: 4px; font-weight: 700;
-        }
-        .matrix-then {
-            font-size: 0.85rem; color: var(--text-primary); border-left: 2px solid var(--text-tertiary); padding-left: 8px;
-        }
-
-        /* Interactive Checklist */
-        .checklist { list-style: none; }
-        .checklist li {
-            padding: 12px 12px 12px 36px; margin-bottom: 8px;
-            background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
-            font-size: 0.95rem; cursor: pointer; position: relative;
-            transition: all 0.2s; display: flex; align-items: center;
-        }
-        .checklist li::before {
-            content: ''; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--text-tertiary);
-            transition: all 0.2s;
-        }
-        .checklist li.checked {
-            color: var(--text-tertiary); text-decoration: line-through; border-color: rgba(255,255,255,0.05); background: transparent;
-        }
-        .checklist li.checked::before {
-            background: var(--accent-emerald); border-color: var(--accent-emerald);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030712' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-            background-size: 10px; background-position: center; background-repeat: no-repeat;
-        }
-
-        /* Fixed Bottom Action Bar */
-        .action-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-top: 1px solid var(--border-subtle); padding: 12px 16px calc(env(safe-area-inset-bottom) + 12px);
-            display: flex; justify-content: space-between; align-items: center; z-index: 100;
-        }
-        .btn {
-            background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-subtle);
-            padding: 10px 16px; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 0.9rem; font-weight: 600;
-            display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-        }
-        .btn-primary {
-            background: var(--accent-blue); color: #fff; border: none;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: var(--accent-emerald); color: #030712; padding: 12px 24px; border-radius: 99px;
-            font-family: var(--font-mono); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); z-index: 1000; opacity: 0; transition: var(--easing) 0.4s; pointer-events: none;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        
-        .math-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; background: var(--bg-card); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.2); }
-
+        body { -ms-overflow-style: none; scrollbar-width: none; -webkit-tap-highlight-color: transparent; background-color: #030712; color: #f3f4f6; }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: slide-down 0.25s ease-in-out; }
+        .glass-header { background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .tappable-list li { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .tappable-list li:active .check-ring { background-color: #10b981; border-color: #10b981; }
+        .check-ring { width: 20px; height: 20px; border-radius: 4px; border: 2px solid #374151; flex-shrink: 0; margin-top: 2px; transition: all 0.2s; }
+        .done .check-ring { background-color: #10b981; border-color: #10b981; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E"); }
+        .done span { text-decoration: line-through; color: #6b7280; }
     </style>
 </head>
-<body>
+<body class="antialiased font-sans flex flex-col min-h-screen">
 
-    <div class="ambient-glow"></div>
-    <div class="toast" id="toast">COPIED TO CLIPBOARD</div>
-
-    <header>
-        <h1>Trust Intel Brief</h1>
-        <div class="subtitle">Quick-reference tactical guide for meetings.</div>
+    <!-- Fixed Header -->
+    <header class="glass-header sticky top-0 z-50 w-full px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+            <h1 class="text-sm font-bold tracking-widest text-emerald-400 uppercase">Intel Brief // Active</h1>
+        </div>
+        <div class="text-xs text-gray-400 font-mono" id="clock">00:00:00</div>
     </header>
 
-    <div class="accordion-group">
-        
-        <!-- ================= LAWS & FIDUCIARY ================= -->
-        <div class="accordion acc-laws">
-            <div class="acc-header" onclick="toggleAccordion(this)">
-                <div class="acc-title"><div class="acc-icon">⚖️</div> 1. Compliance & HEMS Standard</div>
-                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
-            </div>
-            <div class="acc-content">
-                <div class="acc-inner">
-                    <div class="block-label">Your Angle</div>
-                    <p class="context-text">Trustees operate under total liability. They respond well to beneficiaries who understand "fiduciary bound" boundaries. The HEMS standard explicitly protects your accustomed standard of living under "Maintenance."</p>
-                    
-                    <div class="verbatim-script" onclick="copyText(this)">
-                        <div class="script-text">"My goal today is entirely educational. Before discussing strategy, I’d like to kindly request a copy of the trust deed, the IPS, and the latest accounting so I can understand the exact distribution parameters governing the trust."</div>
-                    </div>
+    <main class="flex-1 px-4 py-6 pb-32 space-y-8 max-w-2xl mx-auto w-full">
 
-                    <div class="block-label">If They Object (Response Matrix)</div>
-                    <div class="response-matrix">
-                        <div class="matrix-item">
-                            <div class="matrix-if">IF: "We don't normally share the full deed."</div>
-                            <div class="matrix-then">"Under Texas Trust Code, upon irrevocability, I have an absolute right as a primary beneficiary to the instrument and annual accountings."</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- PRESENTATION TONE -->
+        <div class="text-sm text-gray-400 italic text-center px-4">
+            <p><strong>Presentation Tone:</strong> Be curious, calm, and professional — emphasize learning before action. Phrase distribution interest as “eventual, responsible, and aligned with long-term preservation.”</p>
         </div>
 
-        <!-- ================= PORTFOLIO & YIELD ================= -->
-        <div class="accordion acc-portfolio">
-            <div class="acc-header" onclick="toggleAccordion(this)">
-                <div class="acc-title"><div class="acc-icon">⚙️</div> 2. Portfolio Mathematics</div>
-                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
-            </div>
-            <div class="acc-content">
-                <div class="acc-inner">
-                    <div class="block-label">Your Angle</div>
-                    <p class="context-text">Focus on the "Yale Smoothing Rule" <span class="math-badge">W = 4% * [Avg(Yr1, Yr2, Yr3)]</span>. This proves you understand long-term institutional capital preservation vs. dangerous flat-percentage draws.</p>
-                    
-                    <div class="verbatim-script" onclick="copyText(this)">
-                        <div class="script-text">"Regarding the asset allocation, what expected real return are you modeling for 2026? Are we pegging our sustainable withdrawal rate to a 3-year or 5-year trailing average endowment smoothing rule?"</div>
-                    </div>
+        <!-- SHORT MEETING PRIMER -->
+        <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-5 mb-6">
+            <h2 class="text-lg font-bold text-white mb-3">SHORT MEETING PRIMER <span class="text-xs font-normal text-gray-400 block">(Read in 15 seconds)</span></h2>
+            <ul class="space-y-3 text-sm text-gray-300">
+                <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> <strong>Goal:</strong> Introduce yourself, gather core documents, and ask for two scenario runs. You are NOT asking for distributions today — you are learning.</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> <strong>Openers to say:</strong> “I’m here to learn the structure, confirm authority, and request documents so we can plan responsibly.” (Use the 3 quick lines below.)</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> <strong>Ask for:</strong> certified trust deed, IPS, latest custody & manager statements, fee schedule, and a liquidity memo (1/7/30-day sellability).</li>
+            </ul>
+        </section>
 
-                    <div class="block-label">If They Ask For Your Number</div>
-                    <div class="response-matrix">
-                        <div class="matrix-item">
-                            <div class="matrix-if">IF: "What kind of distributions are you needing?"</div>
-                            <div class="matrix-then">"My goal is roughly $100k daily distribution. I realize this requires roughly $912M in principal at a strictly managed 4% target. Where is the current corpus relative to that benchmark?"</div>
-                        </div>
-                    </div>
-                </div>
+        <!-- 3 QUICK LINES (VERBATIM) -->
+        <section class="space-y-3">
+            <h2 class="text-xl font-bold tracking-tight text-white mb-2">3 QUICK LINES <span class="text-sm text-gray-400 font-normal uppercase tracking-widest ml-2">(Read Aloud)</span></h2>
+            
+            <div class="bg-gray-900/80 border-l-4 border-emerald-500 p-4 rounded-r-xl relative group">
+                <p class="text-emerald-50 text-base leading-relaxed font-medium">“Thank you — I’m here to learn the structure and confirm authority. Please provide the trust deed, current IPS, and latest statements.”</p>
+                <button onclick="copyText(this)" class="absolute top-2 right-2 text-gray-500 hover:text-white p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
             </div>
-        </div>
 
-        <!-- ================= TAX MECHANICS ================= -->
-        <div class="accordion acc-tax">
-            <div class="acc-header" onclick="toggleAccordion(this)">
-                <div class="acc-title"><div class="acc-icon">🏛️</div> 3. Trust Taxation (DNI & K-1s)</div>
-                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            <div class="bg-gray-900/80 border-l-4 border-emerald-500 p-4 rounded-r-xl relative group">
+                <p class="text-emerald-50 text-base leading-relaxed font-medium">“If I request a distribution, what paperwork, approvals, and timeline should I expect?”</p>
+                <button onclick="copyText(this)" class="absolute top-2 right-2 text-gray-500 hover:text-white p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
             </div>
-            <div class="acc-content">
-                <div class="acc-inner">
-                    <div class="block-label">Your Angle</div>
-                    <p class="context-text">Trusts hit max federal tax (37%) at ONLY $15,200 of retained income. They *want* to distribute Distributable Net Income (DNI) to you, transferring the tax burden to your (hopefully lower) personal brackets. Texas has 0% state income tax.</p>
-                    
-                    <div class="verbatim-script" onclick="copyText(this)">
-                        <div class="script-text">"From a tax efficiency standpoint, how are we managing DNI to avoid compressed trust tax brackets? When distributions occur, what is the usual Schedule K-1 characterization breakdown between principal, capital gains, and ordinary income?"</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- ================= STRESS TESTING ================= -->
-        <div class="accordion acc-risk">
-            <div class="acc-header" onclick="toggleAccordion(this)">
-                <div class="acc-title"><div class="acc-icon">📊</div> 4. Institutional Risk Vectors</div>
-                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            <div class="bg-gray-900/80 border-l-4 border-emerald-500 p-4 rounded-r-xl relative group">
+                <p class="text-emerald-50 text-base leading-relaxed font-medium">“Please run two quick scenarios: (A) a smoothed 4% sustainable payout on current allocation, and (B) an immediate distribution showing liquidity sources and tax impact.”</p>
+                <button onclick="copyText(this)" class="absolute top-2 right-2 text-gray-500 hover:text-white p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
             </div>
-            <div class="acc-content">
-                <div class="acc-inner">
-                    <div class="block-label">Your Angle</div>
-                    <p class="context-text">Separate the amateurs from the pros. Ask about "Tail Risk", "Max Drawdowns", and "Monte Carlo Simulation probabilities" over a 30-to-50 year horizon. Make them do the heavy math.</p>
-                    
-                    <div class="verbatim-script" onclick="copyText(this)">
-                        <div class="script-text">"Before we finalize the distribution model, I’d appreciate it if your team ran two scenarios for me. First, a Monte Carlo stress test showing the depletion risk over 30 years using a 4% smoothed draw rate on the current allocation. Second, what is the liquidity timeframe if we needed a sudden major un-modeled distribution?"</div>
-                    </div>
-                </div>
+        </section>
+
+        <!-- EXPECTATIONS (TWO COLUMNS ON LARGER PHONES/TABLETS, STACKED ON SMALL) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <h3 class="text-emerald-400 font-bold mb-3 uppercase text-xs tracking-wider">What They Expect From You</h3>
+                <ul class="text-sm text-gray-300 space-y-2">
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Proof of identity and role; respect for existing governance.</li>
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Clear purpose: learning and responsible stewardship.</li>
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Not to demand distributions until you’ve reviewed documents.</li>
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Willingness to sign off on IPS changes in writing.</li>
+                </ul>
             </div>
-        </div>
-
-        <!-- ================= WALK OUT CHECKLIST ================= -->
-        <div class="accordion acc-tax" style="border-left: 3px solid var(--text-tertiary);">
-            <div class="acc-header" onclick="toggleAccordion(this)">
-                <div class="acc-title"><div class="acc-icon" style="background:var(--bg-hover);color:#fff;">📝</div> 5. The "Walk Out" Checklist</div>
-                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <h3 class="text-blue-400 font-bold mb-3 uppercase text-xs tracking-wider">What You Should Expect From Them</h3>
+                <ul class="text-sm text-gray-300 space-y-2">
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Certified trust deed + amendments, Investment Policy Statement (IPS).</li>
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Fee schedule (all layers), holdings list, and liquidity map.</li>
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Performance net of fees, stress test outputs, and a distribution process with SLA.</li>
+                    <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Clear point of contact and escalation path.</li>
+                </ul>
             </div>
-            <div class="acc-content">
-                <div class="acc-inner">
-                    <div class="block-label">Tap to cross off in meeting</div>
-                    
-                    <ul class="checklist">
-                        <li onclick="toggleCheck(this)">Get Original Trust Instrument (+Amendments)</li>
-                        <li onclick="toggleCheck(this)">Get Investment Policy Statement (IPS)</li>
-                        <li onclick="toggleCheck(this)">Get Latest Holdings / Accounting Statement</li>
-                        <li onclick="toggleCheck(this)">Get Full Direct & Indirect Fee Schedule</li>
-                        <li onclick="toggleCheck(this)">Ask for the Monte Carlo Depletion Report</li>
-                    </ul>
+        </section>
 
-                    <div class="verbatim-script" onclick="copyText(this)" style="margin-top:20px;">
-                        <div class="script-text">"Thank you for your transparency today. Once I receive the documents and the Monte Carlo data we discussed, I’ll digest it and we can schedule a specific follow-up to solidify strategy."</div>
-                    </div>
-                </div>
+        <!-- IMMEDIATE RED FLAGS -->
+        <section class="bg-red-900/30 border border-red-500/50 rounded-xl p-5 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/10 rounded-bl-full"></div>
+            <h2 class="text-lg font-bold text-red-400 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                IMMEDIATE RED FLAGS
+            </h2>
+            <p class="text-xs text-red-300 mb-4 uppercase tracking-widest">Request escalation if any appear</p>
+            <ul class="space-y-3 text-sm text-gray-200">
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Refusal to provide certified trust deed or IPS within 3 business days.</li>
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Opaque or layered undisclosed fees, or refusal to disclose revenue-sharing.</li>
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> No liquidity map or inability to explain how $X would be raised within 30 days.</li>
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Refusal to run basic scenario tests (Monte Carlo or 4% smoothed payout).</li>
+            </ul>
+        </section>
+
+        <!-- WALK-OUT CHECKLIST -->
+        <section class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+            <h2 class="text-lg font-bold text-white mb-1">WALK-OUT CHECKLIST</h2>
+            <p class="text-xs text-emerald-400 mb-4 uppercase tracking-widest">Ask/Get: Tap to mark</p>
+            <ul class="tappable-list text-sm text-gray-300">
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Certified trust instrument + amendments</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Current IPS</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Latest custody + manager statements</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Full fee schedule (advisory, custody, underlying funds)</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Holdings list with valuation dates</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Liquidity memo (1 / 7 / 30 day)</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Monte Carlo depletion report (30yr) for 3%-5%</span></li>
+                <li onclick="this.classList.toggle('done')"><div class="check-ring"></div><span>Contact for custodian & compliance</span></li>
+            </ul>
+        </section>
+
+        <!-- QUICK MATH BOX -->
+        <section class="bg-[#0f172a] border border-blue-900/50 rounded-xl p-5">
+            <h2 class="text-lg font-bold text-blue-400 mb-3 font-mono">QUICK MATH <span class="text-xs text-gray-400 font-sans tracking-widest">(Shareable with managers)</span></h2>
+            <div class="font-mono text-sm text-gray-300 space-y-2 bg-black/40 p-4 rounded-lg">
+                <p>Annual target = daily_target × 365</p>
+                <p>Portfolio expected return = Σ (weight_i × return_i)</p>
+                <p>Required capital = Annual target ÷ Portfolio expected return</p>
+                <div class="h-px bg-gray-700 my-3"></div>
+                <p class="text-emerald-400">Example: $100,000/day → $36,500,000/year.</p>
+                <p>If expected portfolio return = 6% → Required capital ≈ $36,500,000 ÷ 0.06 = <span class="text-white font-bold">$608,333,333</span></p>
             </div>
-        </div>
+        </section>
 
-    </div>
+        <!-- TEXAS TAX NOTE -->
+        <section class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+            <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="text-emerald-500">★</span> TAX NOTE (Texas Focus)
+            </h2>
+            <ul class="space-y-3 text-sm text-gray-300">
+                <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Texas has no state income tax, but federal trust taxation still applies. Trustees reach top federal rates quickly; trusts pay 37% federal tax at relatively low retained-income levels.</li>
+                <li class="flex items-start gap-2"><span class="text-gray-500">•</span> Distributable Net Income (DNI) is the trust calculation that determines what income shifts to beneficiaries (who then may report it on personal returns via Schedule K-1). That often reduces trust-level taxes but moves tax liability to beneficiaries.</li>
+                <li class="flex items-start gap-2 bg-gray-800 p-3 rounded-lg mt-2">
+                    <span class="text-emerald-400 font-bold">Action item (ask now):</span> "How are you allocating DNI between principal, capital gains, and ordinary income on K-1s? Show a sample K-1 for last distribution."
+                </li>
+            </ul>
+        </section>
 
-    <!-- Quick Expand/Collapse Tools -->
-    <div class="action-bar">
-        <button class="btn" onclick="toggleAllAccordions()">Expand All</button>
-        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-emerald);">SECURE BRIEF</span>
-    </div>
+        <!-- WHEN TO TAKE PROFITS -->
+        <section class="space-y-3">
+            <div class="border-b border-gray-800 pb-2 mb-3"><h2 class="text-lg font-bold text-white tracking-wide">When is it 'Appropriate' to Take Profits?</h2></div>
+            <ul class="text-sm text-gray-300 space-y-2 bg-gray-900/50 p-4 rounded-xl border border-gray-800">
+                <li class="flex items-start gap-2"><span class="text-emerald-500">•</span> After liquidity events (asset sales) or when a reserve buffer covers 6–12 months of distributions.</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500">•</span> When the policy-approved spending rate (e.g., 3–5% smoothed) supports it under stress tests.</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500">•</span> After independent tax and estate counsel confirm tax efficiency.</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500">•</span> When trustees and beneficiaries approve in writing per trust rules.</li>
+            </ul>
+        </section>
+
+        <!-- EXPANDABLE TACTICAL ITEMS (THE 20 NEW ITEMS) -->
+        <section class="space-y-3 pt-6">
+            <div class="border-b border-gray-800 pb-2 mb-4">
+                <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">Expanded Tactical Interrogation</h2>
+                <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest">Tap to reveal specifics</p>
+            </div>
+
+            <!-- 1 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Beginner Primer — trust types in one line<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Revocable trust: grantor controls assets; distributions flexible.</li>
+                    <li>• Irrevocable trust: grantor gives up control; distributions only per document.</li>
+                    <li>• Spendthrift trust: protects assets from beneficiary creditors.</li>
+                    <li>• Totals: ask “which of these applies?” and have them point to the deed.</li>
+                </ul>
+            </div></details>
+
+            <!-- 2 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">One-sentence IPS summary to ask for<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Request: “Please give me the Investment Policy Statement — I want the stated objective, risk tolerance, target return, and rebalancing rules in one paragraph.”</li>
+                    <li>• Why: anchors expectations and performance comparisons.</li>
+                </ul>
+            </div></details>
+
+            <!-- 3 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Verbatim: ‘I need the document’ (use this) <span class="ml-2 text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">COPY</span><svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <p>“Please email the certified trust instrument and the current IPS right now or within 3 business days. If you cannot, explain why and provide a written timeline.”</p>
+            </div></details>
+
+            <!-- 4 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Distribution request template (fields they can fill fast)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Beneficiary name / relationship</li>
+                    <li>• Amount requested / frequency (one-time or ongoing)</li>
+                    <li>• Purpose (education, medical, business, living)</li>
+                    <li>• Source preference (cash buffer, liquidate X asset, margin)</li>
+                    <li>• Tax handling preference (pay taxes at trust or to beneficiary)</li>
+                    <li>• Authorization signature + date</li>
+                </ul>
+            </div></details>
+
+            <!-- 5 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Quick timeline standard to expect<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Proof of authority & request submitted: Day 0–1</li>
+                    <li>• Manager confirms liquidity path & fees: Day 1–3</li>
+                    <li>• Trustee approval or denial: Day 3–10 (varies by doc)</li>
+                    <li>• Funding: immediate (cash) → 1–3 days; asset sale → 7–30+ days</li>
+                    <li>• Ask them to confirm their expected SLA for each step.</li>
+                </ul>
+            </div></details>
+
+            <!-- 6 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Manager vetting — 6 short red flags<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Refuses to provide certified deed/IPS within 3 business days.</li>
+                    <li>• Opaque or tiered hidden fees.</li>
+                    <li>• Cannot show liquidity map.</li>
+                    <li>• Refusal to run simple scenario tests.</li>
+                    <li>• No clear custody counterparty.</li>
+                    <li>• No compliance / audit references.</li>
+                </ul>
+            </div></details>
+
+            <!-- 7 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Simple monitoring dashboard metrics to request<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Market value (MV) by account; cash buffer (months of distributions)</li>
+                    <li>• YTD / 1 / 3 / 5 / 10 yr net-of-fees returns vs benchmark</li>
+                    <li>• Annualized volatility and max drawdown (since inception & 10y)</li>
+                    <li>• Ongoing fees (bps) and last 12 months total fees paid</li>
+                    <li>• Concentration table (top 10 holdings % MV)</li>
+                </ul>
+            </div></details>
+
+            <!-- 8 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">How to ask for stress tests (verbatim) <span class="ml-2 text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">COPY</span><svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <p>“Please run these today: (A) 4% smoothed spending rule over 30 years (Monte Carlo 10k trials) and (B) historical stress scenarios for 2008 and 2020 showing portfolio value and probability of depletion at 30 years.”</p>
+            </div></details>
+
+            <!-- 9 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Small glossary — HEMS, DNI, K-1 (plain English)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• HEMS = Health, Education, Maintenance, Support (common discretionary standard).</li>
+                    <li>• DNI = Distributable Net Income (what can be taxed to beneficiaries on K-1).</li>
+                    <li>• K-1 = tax schedule beneficiaries receive showing income passed through from trust.</li>
+                </ul>
+            </div></details>
+
+            <!-- 10 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Tax checklist to hand them (ask now)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Are distributions taxable to the trust or beneficiary? (ask for sample K-1).</li>
+                    <li>• How are capital gains allocated vs ordinary income?</li>
+                    <li>• Do you use tax-loss harvesting? Show last 2 years of tax filings.</li>
+                    <li>• Ask: “What estimated tax actions should a beneficiary take after receiving a distribution?”</li>
+                </ul>
+            </div></details>
+
+            <!-- 11 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Sample IPS clause — distribution policy <span class="ml-2 text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">COPY</span><svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <p>“Spending Rule: The trust will distribute annually an amount equal to spending_rate × average(MV_t for past N years). The default spending_rate is 4% with N = 3 (smoothing). Floor: inflation-adjusted baseline; Ceiling: 6% unless committee approval.”</p>
+            </div></details>
+
+            <!-- 12 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Liquidity sources (what they should show you)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Cash & equivalents (overnight funds, MMFs) — immediate.</li>
+                    <li>• Public securities — sell in 1–7 days depending on size.</li>
+                    <li>• Private assets / RE / PE — 30–90+ days and may need valuation.</li>
+                    <li>• Loans / credit facility — shows use of leverage; ask terms & covenants.</li>
+                </ul>
+            </div></details>
+
+            <!-- 13 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Sample follow-up email (1 sentence) <span class="ml-2 text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">COPY</span><svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <p>“Thanks — per today’s meeting please send certified trust deed, IPS, latest custody and manager statements, full fee schedule, and the two scenario reports (4% smoothed and $X immediate distribution) by EOD three business days. — [Your name]”</p>
+            </div></details>
+
+            <!-- 14 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Quick guide: Is the trust likely to approve? (3 checks)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Is there sufficient liquidity (cash buffer or sellable assets)? → Yes/No.</li>
+                    <li>• Does the request fit the trust’s stated standard (mandatory vs discretionary)? → Yes/No.</li>
+                    <li>• Does the scenario pass the stress test without undue depletion probability? → Yes/No.</li>
+                    <li>• If two or more No’s → expect friction/delay or denial.</li>
+                </ul>
+            </div></details>
+
+            <!-- 15 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Monitoring cadence to propose<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Monthly: high-level statement & cash position.</li>
+                    <li>• Quarterly: performance vs benchmark, rebalancing events, fees.</li>
+                    <li>• Annually: full IPS review, stress-test re-run, spending-rate review.</li>
+                    <li>• Propose this cadence as a written governance appendix.</li>
+                </ul>
+            </div></details>
+
+            <!-- 16 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Two short escalation lines (late/refused) <span class="ml-2 text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">COPY</span><svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-2">
+                    <li>“If you can’t provide these documents within 3 business days, please provide a written explanation and a named compliance contact for escalation.”</li>
+                    <li>“If the response is still unsatisfactory, I will engage family counsel to review governance and next steps.”</li>
+                </ul>
+            </div></details>
+
+            <!-- 17 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Small technical checklist for holdings<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Ticker / asset name, asset class, % MV, cost basis, last valuation date, liquidity category (1/7/30/90 days), tax lot info.</li>
+                    <li>• If private asset, ask for latest third-party valuation and cap table.</li>
+                </ul>
+            </div></details>
+
+            <!-- 18 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Sensible immediate asks (pick 3)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Certified trust deed + current IPS.</li>
+                    <li>• Latest custody statement and holdings list.</li>
+                    <li>• Liquidity memo (cash + sellability matrix).</li>
+                    <li>• Ask for these first — they answer many other questions.</li>
+                </ul>
+            </div></details>
+
+            <!-- 19 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">FAQ: If they say ‘trustee discretion,’ what now?<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Ask: “On what standards do you exercise that discretion? Do you have prior similar example distributions we can review?”</li>
+                    <li>• Ask for the trustee’s internal memo describing precedent + decision timeline.</li>
+                </ul>
+            </div></details>
+
+            <!-- 20 -->
+            <details class="group bg-gray-900/50 outline outline-1 outline-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-800/50"><summary class="flex justify-between items-center p-4 font-semibold text-emerald-100">Micro-security note (confidentiality)<svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></summary><div class="px-4 pb-4 text-sm text-gray-300 leading-relaxed border-t border-gray-800 pt-3">
+                <ul class="space-y-1">
+                    <li>• Ensure they send docs securely (encrypted email or portal).</li>
+                    <li>• Ask who has access to statements and how beneficiary data is protected.</li>
+                </ul>
+            </div></details>
+        </section>
+
+        <!-- VISUALS FOR DEV TEAM -->
+        <section class="mt-8 pt-8 border-t border-gray-800">
+            <h3 class="text-xs text-gray-500 uppercase tracking-widest mb-2 font-mono">Developer Notes / Visual Setup</h3>
+            <div class="bg-gray-900/30 border border-gray-800 rounded-lg p-4 font-mono text-xs text-gray-400 space-y-1">
+                <p>• Inputs: daily_target, weights by asset, expected_returns per asset, spending_rate, smoothing_window.</p>
+                <p>• Formulas:</p>
+                <p class="ml-4">Annual target A = daily_target × 365</p>
+                <p class="ml-4">Portfolio return R = Σ(w_i × r_i)</p>
+                <p class="ml-4">Required capital C = A / R</p>
+                <p class="ml-4">Smoothed distribution D_t = spending_rate × (MV_t + MV_{t-1} + ... + MV_{t-(N-1)}) / N</p>
+                <p class="ml-4">Monte Carlo wealth step: W_{t+1} = W_t × (1 + R_portfolio_t) − Distribution_t − Fees_t</p>
+                <p>• Charts: 'Required capital by preset', interactive pie for weights, Monte Carlo percentile bands over 30y, liquidity waterfall for distributions.</p>
+            </div>
+            <p class="text-[10px] text-gray-600 mt-4 text-center">If documents not delivered within 3 business days, escalate to family counsel.</p>
+        </section>
+
+    </main>
 
     <script>
-        // Haptic Feedback wrapper ensuring browser compatibility
-        function fireHaptic(intensity = 'light') {
-            if (navigator.vibrate) {
-                if (intensity === 'light') navigator.vibrate(10);
-                if (intensity === 'heavy') navigator.vibrate([15, 30, 15]);
-            }
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('clock').textContent = timeStr;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        // Accordion Logic
-        function toggleAccordion(header) {
-            fireHaptic('light');
-            const parent = header.parentElement;
-            const content = parent.querySelector('.acc-content');
-            const isOpen = parent.classList.contains('open');
-
-            // Close all others if desired (mutually exclusive) - Un-comment below to enforce single open
-            // document.querySelectorAll('.accordion').forEach(acc => {
-            //     acc.classList.remove('open');
-            //     acc.querySelector('.acc-content').style.maxHeight = null;
-            // });
-
-            if (!isOpen) {
-                parent.classList.add('open');
-                // Calculate precise height needed
-                content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                parent.classList.remove('open');
-                content.style.maxHeight = null;
-            }
-        }
-
-        function toggleAllAccordions() {
-            fireHaptic('heavy');
-            const allParents = document.querySelectorAll('.accordion');
-            let anyClosed = false;
-            
-            allParents.forEach(acc => { if(!acc.classList.contains('open')) anyClosed = true; });
-
-            allParents.forEach(acc => {
-                const content = acc.querySelector('.acc-content');
-                if (anyClosed) {
-                    acc.classList.add('open');
-                    content.style.maxHeight = content.scrollHeight + "px";
-                } else {
-                    acc.classList.remove('open');
-                    content.style.maxHeight = null;
-                }
+        const details = document.querySelectorAll('details');
+        details.forEach((targetDetail) => {
+            targetDetail.addEventListener('click', () => {
+                details.forEach((detail) => {
+                    if (detail !== targetDetail && detail.hasAttribute('open')) {
+                        detail.removeAttribute('open');
+                    }
+                });
             });
-            event.target.innerText = anyClosed ? "Collapse All" : "Expand All";
-        }
-
-        // Tap to Copy Verbatim
-        let toastTimeout;
-        function copyText(element) {
-            fireHaptic('heavy');
-            const textToCopy = element.querySelector('.script-text').innerText.replace(/"/g, ''); // strip quotes for clipboard
-            
-            // Visual tap feedback
-            element.style.transform = 'scale(0.96)';
-            element.style.borderColor = 'var(--accent-emerald)';
-            setTimeout(() => {
-                element.style.transform = '';
-                element.style.borderColor = '';
-            }, 150);
-
-            // Execute copy
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
-            });
-        }
-
-        // Checklist Interactions
-        function toggleCheck(listItem) {
-            fireHaptic('light');
-            listItem.classList.toggle('checked');
-        }
-
-        // Open the first accordion fully on load naturally
-        window.addEventListener('load', () => {
-            const firstAcc = document.querySelector('.accordion');
-            if(firstAcc) toggleAccordion(firstAcc.querySelector('.acc-header'));
         });
 
+        function copyText(button) {
+            const text = button.previousElementSibling.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalSvg = button.innerHTML;
+                button.innerHTML = '<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                setTimeout(() => { button.innerHTML = originalSvg; }, 2000);
+            });
+        }
     </script>
 </body>
 </html>
