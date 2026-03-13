@@ -1,683 +1,463 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Trust Alignment Intelligence (Texas)</title>
+    <meta name="theme-color" content="#030712">
+    <title>Meeting Intelligence Brief</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            /* Futuristic Fintech / Deep Dark Palette */
-            --bg-base: #020617;
-            --bg-surface: #0f172a;
-            --bg-elevated: #1e293b;
-            --bg-card: rgba(15, 23, 42, 0.6);
+            --bg-deep: #030712;
+            --bg-surface: #111827;
+            --bg-card: #1f2937;
+            --bg-hover: #374151;
             
-            --accent-primary: #10b981; /* Emerald/Teal for Trust/Money */
-            --accent-primary-dim: rgba(16, 185, 129, 0.15);
-            --accent-secondary: #3b82f6; /* Blue for Information */
-            --accent-warn: #f59e0b; /* Amber for checklist */
-            --accent-purple: #8b5cf6; /* Purple for Math/Endowment */
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-highlight: rgba(255, 255, 255, 0.2);
             
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-dark: #0f172a;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-tertiary: #6b7280;
             
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(255, 255, 255, 0.15);
+            --accent-emerald: #10b981;
+            --accent-emerald-dim: rgba(16, 185, 129, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-dim: rgba(59, 130, 246, 0.15);
+            --accent-purple: #8b5cf6;
+            --accent-purple-dim: rgba(139, 92, 246, 0.15);
+            --accent-amber: #f59e0b;
+            --accent-amber-dim: rgba(245, 158, 11, 0.15);
             
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
-            
-            --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             
-            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-xl: 16px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            
+            --easing: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { display: none; }
 
         body {
-            background-color: var(--bg-base);
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
-            color: var(--text-main);
-            font-family: var(--font-display);
-            line-height: 1.6;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            padding: calc(env(safe-area-inset-top) + 24px) 16px calc(env(safe-area-inset-bottom) + 40px) 16px;
             overflow-x: hidden;
-            padding: calc(env(safe-area-inset-top) + 20px) 16px 120px 16px;
-            position: relative;
         }
 
-        /* Ambient background glow */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 300px;
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.03) 0%, transparent 100%);
-            z-index: -1;
-            pointer-events: none;
+        /* Ambient Glow Background */
+        .ambient-glow {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
         }
 
-        /* Typography */
-        h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            line-height: 1.05;
-            letter-spacing: -0.03em;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.1s;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            font-weight: 300;
-            max-width: 90%;
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
+        header {
             margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.01em;
-        }
-
-        .h2-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-        }
-
-        /* Header Pill */
-        .header-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--accent-primary-dim);
-            color: var(--accent-primary);
-            font-size: 0.75rem;
-            font-family: var(--font-mono);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 8px 14px;
-            border-radius: 9999px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        .pulse {
-            width: 8px; height: 8px;
-            background-color: var(--accent-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-primary);
-            position: relative;
+        h1 {
+            font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
-        .pulse::after {
-            content: '';
-            position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
-            border-radius: 50%;
-            border: 1px solid var(--accent-primary);
-            animation: ripple 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        .subtitle {
+            font-size: 0.9rem; color: var(--text-secondary);
         }
 
-        /* Glass Cards */
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        /* Accordion Structure */
+        .accordion-group {
+            display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;
+        }
+
+        .accordion {
+            background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            position: relative;
-            transform: translateY(30px);
-            opacity: 0;
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            transition: var(--transition-smooth);
-        }
-
-        .card:nth-child(3) { animation-delay: 0.1s; }
-        .card:nth-child(4) { animation-delay: 0.2s; }
-        .card:nth-child(5) { animation-delay: 0.3s; }
-        .card:nth-child(6) { animation-delay: 0.4s; }
-        .card:nth-child(7) { animation-delay: 0.5s; }
-
-        .card:active {
-            transform: scale(0.98);
-        }
-
-        /* Interactive Verbatim Boxes */
-        .verbatim-box {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-subtle);
-            border-left: 3px solid var(--accent-primary);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            margin: 16px 0;
-            cursor: pointer;
-            position: relative;
             overflow: hidden;
-            transition: var(--transition-smooth);
-        }
-
-        .verbatim-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s;
-        }
-
-        .verbatim-box:active {
-            background: rgba(16, 185, 129, 0.05);
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.1);
-            transform: scale(0.98);
+            transition: border-color 0.3s var(--easing);
         }
         
-        .verbatim-box.copied {
-            border-color: var(--accent-primary);
-            background: var(--accent-primary-dim);
-        }
-        .verbatim-box.copied .verbatim-text { color: var(--accent-primary); }
-        .verbatim-box.copied::before { transform: translateX(100%); }
+        /* Thematic Accents */
+        .acc-laws { border-left: 3px solid var(--accent-emerald); }
+        .acc-portfolio { border-left: 3px solid var(--accent-purple); }
+        .acc-tax { border-left: 3px solid var(--accent-blue); }
+        .acc-risk { border-left: 3px solid var(--accent-amber); }
 
-        .verbatim-label {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--accent-primary);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            letter-spacing: 0.05em;
-            font-weight: 700;
+        .acc-header {
+            padding: 18px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; user-select: none;
+            background: rgba(255, 255, 255, 0.01);
+            transition: background 0.2s;
         }
-
-        .verbatim-text {
-            font-size: 1.15rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #ffffff;
-            font-style: italic;
-            position: relative;
-            z-index: 1;
-            transition: color 0.3s;
+        .acc-header:active { background: rgba(255, 255, 255, 0.03); }
+        
+        .acc-title {
+            font-weight: 600; font-size: 1.05rem; display: flex; align-items: center; gap: 12px;
         }
         
-        /* Math & Concept Grids */
-        .concept-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 16px;
+        .acc-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; border-radius: var(--radius-md); font-size: 1rem;
+        }
+        .acc-laws .acc-icon { background: var(--accent-emerald-dim); color: var(--accent-emerald); }
+        .acc-portfolio .acc-icon { background: var(--accent-purple-dim); color: var(--accent-purple); }
+        .acc-tax .acc-icon { background: var(--accent-blue-dim); color: var(--accent-blue); }
+        .acc-risk .acc-icon { background: var(--accent-amber-dim); color: var(--accent-amber); }
+
+        .acc-chevron {
+            color: var(--text-tertiary);
+            transition: transform 0.4s var(--easing);
+            display: flex; align-items: center;
+        }
+
+        .accordion.open .acc-chevron { transform: rotate(180deg); color: var(--text-primary); }
+        .accordion.open { border-color: var(--border-highlight); }
+        
+        .acc-content {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s var(--easing);
+            background: var(--bg-deep); /* Inner dark well */
         }
         
-        .concept-item {
+        .acc-inner { padding: 20px; border-top: 1px dashed var(--border-subtle); }
+
+        /* Content Blocks */
+        .block-label {
+            font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 8px; font-weight: 600;
+        }
+        
+        .context-text {
+            font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;
+        }
+
+        /* Tap to copy UI */
+        .verbatim-script {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px; margin-bottom: 20px;
+            cursor: pointer; position: relative;
+            transition: all 0.2s var(--easing);
+        }
+        .verbatim-script:active { transform: scale(0.98); border-color: var(--accent-blue); }
+        .verbatim-script::before {
+            content: 'TAP TO COPY VERBATIM';
+            display: block; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+            color: var(--accent-blue); margin-bottom: 8px; letter-spacing: 0.05em;
+        }
+        .script-text {
+            font-size: 1.1rem; color: #fff; line-height: 1.4; font-style: italic; font-weight: 500;
+        }
+
+        /* Response Matrix Grid */
+        .response-matrix {
+            display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px;
+        }
+        .matrix-item {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 16px;
-            transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
+            padding: 12px;
         }
-        
-        .concept-item::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 30%; height: 1px;
-            background: linear-gradient(90deg, var(--accent-primary), transparent);
-            opacity: 0.5;
+        .matrix-if {
+            font-family: var(--font-mono); font-size: 0.75rem; color: #f43f5e; margin-bottom: 4px; font-weight: 700;
+        }
+        .matrix-then {
+            font-size: 0.85rem; color: var(--text-primary); border-left: 2px solid var(--text-tertiary); padding-left: 8px;
         }
 
-        .concept-title {
-            font-weight: 600;
-            font-size: 1rem;
-            color: #ffffff;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        /* Interactive Checklist */
+        .checklist { list-style: none; }
+        .checklist li {
+            padding: 12px 12px 12px 36px; margin-bottom: 8px;
+            background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            font-size: 0.95rem; cursor: pointer; position: relative;
+            transition: all 0.2s; display: flex; align-items: center;
         }
-        
-        .concept-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
+        .checklist li::before {
+            content: ''; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--text-tertiary);
+            transition: all 0.2s;
         }
-
-        .math-box {
-            background: rgba(139, 92, 246, 0.08);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-left: 3px solid var(--accent-purple);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin: 16px 0;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            position: relative;
-            overflow: hidden;
+        .checklist li.checked {
+            color: var(--text-tertiary); text-decoration: line-through; border-color: rgba(255,255,255,0.05); background: transparent;
         }
-        
-        .math-box::before {
-            content: 'ƒ(x)';
-            position: absolute;
-            right: 12px;
-            top: 12px;
-            font-size: 2rem;
-            opacity: 0.05;
-            font-weight: 700;
+        .checklist li.checked::before {
+            background: var(--accent-emerald); border-color: var(--accent-emerald);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030712' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+            background-size: 10px; background-position: center; background-repeat: no-repeat;
         }
 
-        .math-box span.var { color: var(--accent-purple); font-weight: bold; }
-        .highlight { color: var(--accent-primary); font-weight: 600; }
-
-        /* Lists */
-        ul { list-style: none; }
-        
-        .check-list li {
-            position: relative;
-            padding-left: 28px;
-            margin-bottom: 14px;
-            font-size: 0.95rem;
-            color: var(--text-main);
-            display: flex;
-            align-items: flex-start;
+        /* Fixed Bottom Action Bar */
+        .action-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border-subtle); padding: 12px 16px calc(env(safe-area-inset-bottom) + 12px);
+            display: flex; justify-content: space-between; align-items: center; z-index: 100;
+        }
+        .btn {
+            background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-subtle);
+            padding: 10px 16px; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 0.9rem; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--accent-blue); color: #fff; border: none;
         }
 
-        .check-list li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 4px;
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid var(--accent-warn);
-            background: rgba(245, 158, 11, 0.1);
-        }
-        
-        .check-list li.checked::before {
-            background: var(--accent-warn);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-            background-size: 10px;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .info-list li {
-            position: relative;
-            padding-left: 20px;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            color: var(--text-main);
-        }
-
-        .info-list li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--accent-primary);
-            font-weight: bold;
-        }
-
-        /* Specific Colors for themes */
-        .theme-purple .h2-icon { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
-        .theme-purple h2 { color: var(--accent-purple); }
-        
-        .theme-blue .h2-icon { background: rgba(59, 130, 246, 0.15); color: var(--accent-secondary); }
-        .theme-blue h2 { color: var(--accent-secondary); }
-        .theme-blue .verbatim-box { border-left-color: var(--accent-secondary); }
-        .theme-blue .verbatim-box:active { background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.3); }
-        .theme-blue .verbatim-label { color: var(--accent-secondary); }
-        .theme-blue .concept-item::after { background: linear-gradient(90deg, var(--accent-secondary), transparent); }
-        
-        .theme-amber { border-color: rgba(245, 158, 11, 0.2); }
-        .theme-amber .h2-icon { background: rgba(245, 158, 11, 0.15); color: var(--accent-warn); }
-        .theme-amber h2 { color: var(--accent-warn); }
-        .theme-amber .verbatim-box { border-left-color: var(--accent-warn); }
-        .theme-amber .verbatim-box:active { background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.3); }
-        .theme-amber .verbatim-label { color: var(--accent-warn); }
-
-        /* Floating Nav/Action Bar */
-        .bottom-nav {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 99px;
-            padding: 8px 16px;
-            display: flex;
-            gap: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            z-index: 100;
-        }
-
-        .nav-item {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 8px 12px;
-            border-radius: 99px;
-            transition: var(--transition-smooth);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-item.active {
-            background: var(--accent-primary);
-            color: var(--bg-base);
-        }
-
-        /* Animations */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(3); opacity: 0; }
-        }
-
-        /* Toast Notification */
+        /* Toast */
         .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: var(--accent-primary);
-            color: var(--bg-base);
-            padding: 12px 24px;
-            border-radius: 99px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--accent-emerald); color: #030712; padding: 12px 24px; border-radius: 99px;
+            font-family: var(--font-mono); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); z-index: 1000; opacity: 0; transition: var(--easing) 0.4s; pointer-events: none;
         }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        
+        .math-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; background: var(--bg-card); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.2); }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
 
-    <div class="header" id="top">
-        <div class="header-pill">
-            <div class="pulse"></div>
-            Intelligence Brief
-        </div>
-        <h1>Trust Alignment<br>Strategy</h1>
-        <p class="subtitle">Authoritative concepts, fiduciary bounds, endowment rules, and Texas tax mapping.</p>
-    </div>
+    <div class="ambient-glow"></div>
+    <div class="toast" id="toast">COPIED TO CLIPBOARD</div>
 
-    <!-- 1. The Fiduciary Foundation -->
-    <div class="card theme-teal">
-        <h2><div class="h2-icon">⚖️</div> 1. The Fiduciary & Legal Anchor</h2>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px;">
-            Trustees in Texas operate under the "highest duty under the law". They are terrified of breaching this. Speak their language to lower their defenses.
-        </p>
+    <header>
+        <h1>Trust Intel Brief</h1>
+        <div class="subtitle">Quick-reference tactical guide for meetings.</div>
+    </header>
+
+    <div class="accordion-group">
         
-        <div class="concept-grid">
-            <div class="concept-item">
-                <div class="concept-title">HEMS Standard <span style="font-size: 0.7rem; color:var(--accent-primary); font-family:var(--font-mono);">(IRS Safe Harbor)</span></div>
-                <div class="concept-desc">Discretionary distributions are governed by HEMS: <span class="highlight">Health, Education, Maintenance, or Support</span>. "Maintenance" legally protects your accustomed standard of living. Tie all requests to these pillars.</div>
+        <!-- ================= LAWS & FIDUCIARY ================= -->
+        <div class="accordion acc-laws">
+            <div class="acc-header" onclick="toggleAccordion(this)">
+                <div class="acc-title"><div class="acc-icon">⚖️</div> 1. Compliance & HEMS Standard</div>
+                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
             </div>
-            <div class="concept-item">
-                <div class="concept-title">Duty of Prudent Management</div>
-                <div class="concept-desc">Trustees must preserve the portfolio per the Texas Property Code. They will heavily scrutinize large, one-time cash drawdowns outside a policy.</div>
-            </div>
-            <div class="concept-item">
-                <div class="concept-title">Beneficiary Demand Rights</div>
-                <div class="concept-desc">Under the Texas Trust Code, you possess the unalienable right to an <strong>annual accounting</strong> and a copy of the trust document upon irrevocability.</div>
-            </div>
-        </div>
-
-        <div class="verbatim-box tap-copy" data-text="My goal today is educational. I'd like to ask for a copy of the trust deed, the IPS, and the latest accounting statements so I can understand the exact distribution standards—whether HEMS or otherwise—that govern this trust.">
-            <span class="verbatim-label">
-                <span><span class="quote-icon">"</span> Opening Posture (Tap to Read)</span>
-                <span style="opacity:0.5; font-size: 16px;">💬</span>
-            </span>
-            <div class="verbatim-text">
-                "My goal today is educational. I'd like to ask for a copy of the trust deed, the IPS, and the latest accounting statements so I can understand the exact distribution standards—whether HEMS or otherwise—that govern this trust."
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. The Math of the "Appropriate Time" -->
-    <div class="card theme-purple">
-        <h2><div class="h2-icon">📈</div> 2. Sustaining the Endowment Model</h2>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px;">
-            How trusts guarantee perpetual asset survival using University Endowment methodologies.
-        </p>
-
-        <div class="math-box">
-            <span style="color: var(--accent-purple); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.05em;">Target Capital Requirement</span>
-            <span class="var">Capital Needed</span> = Annual Target Payout ÷ Expected Portfolio Return<br><br>
-            <em style="color:#94a3b8">If you want $100k/day ($36.5M/yr), and the portfolio nets 6% annually:<br> $36.5M ÷ 0.06 = $608M required capital.</em>
-        </div>
-
-        <div class="math-box">
-            <span style="color: var(--accent-purple); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.05em;">The Smoothing Rule (Yale Model)</span>
-            <span class="var">Safe Distribution</span> = % Rate × (Average Portfolio Value over N years)<br><br>
-            <em style="color:#94a3b8">Endowments limit draws to 3-5% of a 3-to-5-year average value to avoid forced asset liquidation during market crashes.</em>
-        </div>
-
-        <div class="verbatim-box tap-copy theme-purple" style="border-left-color: var(--accent-purple);" data-text="If we map this to an endowment model, what is the current sustainable withdrawal rate outlined in the IPS? Are we utilizing a 3-to-5-year smoothing rule to determine the safe distribution amount?">
-            <span class="verbatim-label" style="color: var(--accent-purple);">
-                <span><span class="quote-icon">"</span> The Institutional Question</span>
-                <span style="opacity:0.5; font-size: 16px;">⚙️</span>
-            </span>
-            <div class="verbatim-text">
-                "If we map this to an endowment model, what is the current sustainable withdrawal rate outlined in the IPS? Are we utilizing a 3-to-5-year smoothing rule to determine the safe distribution amount?"
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. Stress Testing & Readiness -->
-    <div class="card theme-teal">
-        <h2><div class="h2-icon">🛡️</div> 3. Portfolio Stress Testing Request</h2>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px;">
-            Don't ask "how is it doing?" Ask for the hard math on catastrophic risk.
-        </p>
-        
-        <ul class="info-list">
-            <li><span class="highlight">Max Drawdown:</span> What is the worst peak-to-trough drop this combination of assets has experienced?</li>
-            <li><span class="highlight">Monte Carlo Depletion Risk:</span> Have they run a 10,000-trial simulation to prove the trust survives a 30-year span at the current payout rate?</li>
-            <li><span class="highlight">Cash Buffer Allocation:</span> Do they keep 6-12 months of distributions in liquid cash so they never sell stocks at a loss?</li>
-        </ul>
-
-        <div class="verbatim-box tap-copy" data-text="Could your team run two scenarios for me? First, a Monte Carlo stress test showing the depletion risk at a 4% smoothed draw rate. Second, a liquidity analysis of what happens if we needed to raise a sudden cash distribution within 30 days.">
-            <span class="verbatim-label">
-                <span><span class="quote-icon">"</span> The Scenario Request</span>
-                <span style="opacity:0.5; font-size: 16px;">📊</span>
-            </span>
-            <div class="verbatim-text">
-                "Could your team run two scenarios for me? First, a Monte Carlo stress test showing the depletion risk at a 4% smoothed draw rate. Second, a liquidity analysis of what happens if we needed to raise a sudden cash distribution within 30 days."
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. Tax Reality (Texas & Federal) -->
-    <div class="card theme-blue">
-        <h2><div class="h2-icon">🏛️</div> 4. Texas & Federal Tax Mechanics</h2>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px;">
-            Trust taxation is wildly different from personal taxation.
-        </p>
-
-        <div class="concept-grid">
-            <div class="concept-item">
-                <div class="concept-title">Distributable Net Income (DNI) Trap</div>
-                <div class="concept-desc">Trusts hit the top 37% federal tax bracket at mere $15,200 of retained income. Trusts <em>want</em> to distribute this DNI to you, pushing the tax burden to your individual, lower tax brackets.</div>
-            </div>
-            <div class="concept-item">
-                <div class="concept-title">The K-1 Character Pass-Through</div>
-                <div class="concept-desc">You receive a Schedule K-1. The "character" of the asset passes to you. Capital gains pass as capital gains (max 20%); interest passes as ordinary income.</div>
-            </div>
-            <div class="concept-item" style="border-left: 2px solid var(--accent-secondary); background: rgba(59, 130, 246, 0.05);">
-                <div class="concept-title" style="color: var(--accent-secondary);">The Texas Geographic Arbitrage</div>
-                <div class="concept-desc"><strong>0% State Income Tax.</strong> You have a massive geometric advantage. You only plan for Federal IRS estimated payments on K-1 income.</div>
-            </div>
-        </div>
-
-        <div class="verbatim-box tap-copy theme-blue" data-text="From a tax efficiency standpoint, how are we managing DNI to avoid compressed trust tax brackets? When distributions occur, what is the usual K-1 characterization breakdown between principal, capital gains, and ordinary income?">
-            <span class="verbatim-label">
-                <span><span class="quote-icon">"</span> Tax Architecture Query</span>
-                <span style="opacity:0.5; font-size: 16px;">📝</span>
-            </span>
-            <div class="verbatim-text">
-                "From a tax efficiency standpoint, how are we managing DNI to avoid compressed trust tax brackets? When distributions occur, what is the usual K-1 characterization breakdown between principal, capital gains, and ordinary income?"
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. Final Checklist -->
-    <div class="card theme-amber" id="checklist">
-        <h2><div class="h2-icon">📋</div> 5. Actionable Walk-Out Checklist</h2>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px;">
-            Tap to check off exactly what you requested to leave with (via email/print).
-        </p>
-        
-        <ul class="check-list" id="interactive-checklist">
-            <li>Certified Trust Instrument & Amendments</li>
-            <li>Investment Policy Statement (IPS)</li>
-            <li>Latest Accounting & Holdings Statement</li>
-            <li>Fee Schedule (Advisory, Custody, Fund fees)</li>
-            <li>Monte Carlo Depletion Risk Report</li>
-        </ul>
-        
-        <div class="verbatim-box tap-copy theme-amber" style="margin-top:24px;" data-text="Thank you for the time. I look forward to reviewing the IPS, the accounting statements, and the scenario tests we discussed. I'd love to schedule a follow-up once I've digested the information.">
-            <span class="verbatim-label">
-                <span><span class="quote-icon">"</span> The Departure Script</span>
-                <span style="opacity:0.5; font-size: 16px;">🤝</span>
-            </span>
-            <div class="verbatim-text">
-                "Thank you for the time. I look forward to reviewing the IPS, the accounting statements, and the scenario tests we discussed. I'd love to schedule a follow-up once I've digested the information."
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="toast">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        Copied to clipboard
-    </div>
-
-    <!-- Interactive JS -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Checklist interaction
-            const listItems = document.querySelectorAll('#interactive-checklist li');
-            listItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    this.classList.toggle('checked');
-                    // Add subtle haptic feedback if supported
-                    if (navigator.vibrate) navigator.vibrate(10);
-                });
-            });
-
-            // Tap to copy for Verbatim boxes
-            const verbatimBoxes = document.querySelectorAll('.tap-copy');
-            const toast = document.getElementById('toast');
-            let toastTimeout;
-
-            verbatimBoxes.forEach(box => {
-                box.addEventListener('click', function() {
-                    const textToCopy = this.getAttribute('data-text');
+            <div class="acc-content">
+                <div class="acc-inner">
+                    <div class="block-label">Your Angle</div>
+                    <p class="context-text">Trustees operate under total liability. They respond well to beneficiaries who understand "fiduciary bound" boundaries. The HEMS standard explicitly protects your accustomed standard of living under "Maintenance."</p>
                     
-                    navigator.clipboard.writeText(textToCopy).then(() => {
-                        // Visual feedback on the box
-                        this.classList.add('copied');
-                        setTimeout(() => this.classList.remove('copied'), 600);
-                        
-                        // Haptic
-                        if (navigator.vibrate) navigator.vibrate(20);
+                    <div class="verbatim-script" onclick="copyText(this)">
+                        <div class="script-text">"My goal today is entirely educational. Before discussing strategy, I’d like to kindly request a copy of the trust deed, the IPS, and the latest accounting so I can understand the exact distribution parameters governing the trust."</div>
+                    </div>
 
-                        // Show Toast
-                        clearTimeout(toastTimeout);
-                        toast.classList.add('show');
-                        toastTimeout = setTimeout(() => {
-                            toast.classList.remove('show');
-                        }, 2500);
-                    });
-                });
+                    <div class="block-label">If They Object (Response Matrix)</div>
+                    <div class="response-matrix">
+                        <div class="matrix-item">
+                            <div class="matrix-if">IF: "We don't normally share the full deed."</div>
+                            <div class="matrix-then">"Under Texas Trust Code, upon irrevocability, I have an absolute right as a primary beneficiary to the instrument and annual accountings."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PORTFOLIO & YIELD ================= -->
+        <div class="accordion acc-portfolio">
+            <div class="acc-header" onclick="toggleAccordion(this)">
+                <div class="acc-title"><div class="acc-icon">⚙️</div> 2. Portfolio Mathematics</div>
+                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </div>
+            <div class="acc-content">
+                <div class="acc-inner">
+                    <div class="block-label">Your Angle</div>
+                    <p class="context-text">Focus on the "Yale Smoothing Rule" <span class="math-badge">W = 4% * [Avg(Yr1, Yr2, Yr3)]</span>. This proves you understand long-term institutional capital preservation vs. dangerous flat-percentage draws.</p>
+                    
+                    <div class="verbatim-script" onclick="copyText(this)">
+                        <div class="script-text">"Regarding the asset allocation, what expected real return are you modeling for 2026? Are we pegging our sustainable withdrawal rate to a 3-year or 5-year trailing average endowment smoothing rule?"</div>
+                    </div>
+
+                    <div class="block-label">If They Ask For Your Number</div>
+                    <div class="response-matrix">
+                        <div class="matrix-item">
+                            <div class="matrix-if">IF: "What kind of distributions are you needing?"</div>
+                            <div class="matrix-then">"My goal is roughly $100k daily distribution. I realize this requires roughly $912M in principal at a strictly managed 4% target. Where is the current corpus relative to that benchmark?"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAX MECHANICS ================= -->
+        <div class="accordion acc-tax">
+            <div class="acc-header" onclick="toggleAccordion(this)">
+                <div class="acc-title"><div class="acc-icon">🏛️</div> 3. Trust Taxation (DNI & K-1s)</div>
+                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </div>
+            <div class="acc-content">
+                <div class="acc-inner">
+                    <div class="block-label">Your Angle</div>
+                    <p class="context-text">Trusts hit max federal tax (37%) at ONLY $15,200 of retained income. They *want* to distribute Distributable Net Income (DNI) to you, transferring the tax burden to your (hopefully lower) personal brackets. Texas has 0% state income tax.</p>
+                    
+                    <div class="verbatim-script" onclick="copyText(this)">
+                        <div class="script-text">"From a tax efficiency standpoint, how are we managing DNI to avoid compressed trust tax brackets? When distributions occur, what is the usual Schedule K-1 characterization breakdown between principal, capital gains, and ordinary income?"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= STRESS TESTING ================= -->
+        <div class="accordion acc-risk">
+            <div class="acc-header" onclick="toggleAccordion(this)">
+                <div class="acc-title"><div class="acc-icon">📊</div> 4. Institutional Risk Vectors</div>
+                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </div>
+            <div class="acc-content">
+                <div class="acc-inner">
+                    <div class="block-label">Your Angle</div>
+                    <p class="context-text">Separate the amateurs from the pros. Ask about "Tail Risk", "Max Drawdowns", and "Monte Carlo Simulation probabilities" over a 30-to-50 year horizon. Make them do the heavy math.</p>
+                    
+                    <div class="verbatim-script" onclick="copyText(this)">
+                        <div class="script-text">"Before we finalize the distribution model, I’d appreciate it if your team ran two scenarios for me. First, a Monte Carlo stress test showing the depletion risk over 30 years using a 4% smoothed draw rate on the current allocation. Second, what is the liquidity timeframe if we needed a sudden major un-modeled distribution?"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= WALK OUT CHECKLIST ================= -->
+        <div class="accordion acc-tax" style="border-left: 3px solid var(--text-tertiary);">
+            <div class="acc-header" onclick="toggleAccordion(this)">
+                <div class="acc-title"><div class="acc-icon" style="background:var(--bg-hover);color:#fff;">📝</div> 5. The "Walk Out" Checklist</div>
+                <div class="acc-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </div>
+            <div class="acc-content">
+                <div class="acc-inner">
+                    <div class="block-label">Tap to cross off in meeting</div>
+                    
+                    <ul class="checklist">
+                        <li onclick="toggleCheck(this)">Get Original Trust Instrument (+Amendments)</li>
+                        <li onclick="toggleCheck(this)">Get Investment Policy Statement (IPS)</li>
+                        <li onclick="toggleCheck(this)">Get Latest Holdings / Accounting Statement</li>
+                        <li onclick="toggleCheck(this)">Get Full Direct & Indirect Fee Schedule</li>
+                        <li onclick="toggleCheck(this)">Ask for the Monte Carlo Depletion Report</li>
+                    </ul>
+
+                    <div class="verbatim-script" onclick="copyText(this)" style="margin-top:20px;">
+                        <div class="script-text">"Thank you for your transparency today. Once I receive the documents and the Monte Carlo data we discussed, I’ll digest it and we can schedule a specific follow-up to solidify strategy."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Expand/Collapse Tools -->
+    <div class="action-bar">
+        <button class="btn" onclick="toggleAllAccordions()">Expand All</button>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-emerald);">SECURE BRIEF</span>
+    </div>
+
+    <script>
+        // Haptic Feedback wrapper ensuring browser compatibility
+        function fireHaptic(intensity = 'light') {
+            if (navigator.vibrate) {
+                if (intensity === 'light') navigator.vibrate(10);
+                if (intensity === 'heavy') navigator.vibrate([15, 30, 15]);
+            }
+        }
+
+        // Accordion Logic
+        function toggleAccordion(header) {
+            fireHaptic('light');
+            const parent = header.parentElement;
+            const content = parent.querySelector('.acc-content');
+            const isOpen = parent.classList.contains('open');
+
+            // Close all others if desired (mutually exclusive) - Un-comment below to enforce single open
+            // document.querySelectorAll('.accordion').forEach(acc => {
+            //     acc.classList.remove('open');
+            //     acc.querySelector('.acc-content').style.maxHeight = null;
+            // });
+
+            if (!isOpen) {
+                parent.classList.add('open');
+                // Calculate precise height needed
+                content.style.maxHeight = content.scrollHeight + "px";
+            } else {
+                parent.classList.remove('open');
+                content.style.maxHeight = null;
+            }
+        }
+
+        function toggleAllAccordions() {
+            fireHaptic('heavy');
+            const allParents = document.querySelectorAll('.accordion');
+            let anyClosed = false;
+            
+            allParents.forEach(acc => { if(!acc.classList.contains('open')) anyClosed = true; });
+
+            allParents.forEach(acc => {
+                const content = acc.querySelector('.acc-content');
+                if (anyClosed) {
+                    acc.classList.add('open');
+                    content.style.maxHeight = content.scrollHeight + "px";
+                } else {
+                    acc.classList.remove('open');
+                    content.style.maxHeight = null;
+                }
             });
+            event.target.innerText = anyClosed ? "Collapse All" : "Expand All";
+        }
 
-            // Intersection Observer for scroll animations
-            const cards = document.querySelectorAll('.card');
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+        // Tap to Copy Verbatim
+        let toastTimeout;
+        function copyText(element) {
+            fireHaptic('heavy');
+            const textToCopy = element.querySelector('.script-text').innerText.replace(/"/g, ''); // strip quotes for clipboard
+            
+            // Visual tap feedback
+            element.style.transform = 'scale(0.96)';
+            element.style.borderColor = 'var(--accent-emerald)';
+            setTimeout(() => {
+                element.style.transform = '';
+                element.style.borderColor = '';
+            }, 150);
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
+            // Execute copy
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
 
-            cards.forEach(card => observer.observe(card));
+        // Checklist Interactions
+        function toggleCheck(listItem) {
+            fireHaptic('light');
+            listItem.classList.toggle('checked');
+        }
+
+        // Open the first accordion fully on load naturally
+        window.addEventListener('load', () => {
+            const firstAcc = document.querySelector('.accordion');
+            if(firstAcc) toggleAccordion(firstAcc.querySelector('.acc-header'));
         });
+
     </script>
 </body>
 </html>
