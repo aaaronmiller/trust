@@ -803,7 +803,7 @@ Good question to ask:
 🌟 11. QUICK NOTES TO SCAN BEFORE WALKING IN
 •
 • Ask to learn the structure first.
-• Ask for reporting access.
+• Ask for reporting access.and produce a mobile first
 •
 • Ask how succession works.
 • Keep tone calm, confident, responsible.
